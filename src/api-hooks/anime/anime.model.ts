@@ -1,10 +1,15 @@
 export interface AnimeMediaModel {
   id: number;
-  bannerImage: string;
+  bannerImage: string | null;
   description: string;
   status: string;
-  seasonYear: number;
+  seasonYear: number | null;
   popularity: number;
+  chapters: null | number;
+  episodes: number | null;
+  genres: string[];
+  hashtag: string;
+
   coverImage: {
     extraLarge: string;
     large: string;

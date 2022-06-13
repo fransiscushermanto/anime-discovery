@@ -2,19 +2,24 @@ import { css, cx } from "@emotion/css";
 import { Box, Home } from "@shapes";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { memo } from "react";
 
 const styled = {
   root: css`
     height: 50px;
     width: 100%;
-    position: absolute;
+    position: fixed;
     bottom: 0;
     background-color: var(--primary-color);
     display: inline-flex;
 
     box-shadow: 0px 5px 4px 3px rgb(255 255 255);
+
+    @media (max-width: 768px) {
+      max-width: var(--mobile-width);
+    }
     .bottom-toolbar-item {
+      cursor: pointer;
       flex: 1;
       display: flex;
       justify-content: center;
@@ -46,11 +51,11 @@ function BottomToolbar() {
           <Home />
         </div>
       </Link>
-      <Link href="/collection" passHref>
+      <Link href="/collections" passHref>
         <div
           role="button"
           className={cx("bottom-toolbar-item", {
-            active: targetPath === "collection",
+            active: targetPath === "collections",
           })}
         >
           <Box />
@@ -60,4 +65,4 @@ function BottomToolbar() {
   );
 }
 
-export default BottomToolbar;
+export default memo(BottomToolbar);

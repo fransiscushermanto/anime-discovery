@@ -9,8 +9,11 @@ import { allAnimeListVariables } from "./constants";
 
 const styled = {
   root: css`
-    height: 100%;
-    padding: 44px 28px;
+    padding: 20px 28px;
+    @media (max-width: 375px) {
+      padding-left: 0;
+      padding-right: 0;
+    }
     display: flex;
     flex-direction: column;
     .anime-list {
@@ -36,8 +39,7 @@ const styled = {
 
 function AnimeList() {
   const router = useRouter();
-  const rootRef = useRef(null);
-  const { data, fetchMore } = useGetAnimeList({
+  const { data, fetchMore, client } = useGetAnimeList({
     variables: allAnimeListVariables,
     notifyOnNetworkStatusChange: true,
   });
@@ -46,7 +48,7 @@ function AnimeList() {
     : allAnimeListVariables.page;
 
   function onPageChange(page: number) {
-    rootRef.current.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
     router.push(
       {
         query: {
@@ -65,12 +67,26 @@ function AnimeList() {
     });
   }
 
+  useEffect(() => {
+    if (!router.query.page && data.Page.pageInfo.currentPage !== 1) {
+      fetchMore({ variables: allAnimeListVariables });
+    }
+  }, [data.Page.pageInfo.currentPage, fetchMore, router.query]);
+
+  useEffect(() => {
+    return () => {
+      client.clearStore();
+    };
+  }, []);
+
   return (
-    <div ref={rootRef} className={styled.root}>
+    <div className={styled.root}>
       <ul className="anime-list">
-        {data?.Page?.media.map((anime) => (
-          <AnimeCard anime={anime} key={anime.id} />
-        ))}
+        {data?.Page?.media
+          .slice(0, allAnimeListVariables.perPage)
+          .map((anime) => (
+            <AnimeCard anime={anime} key={anime.id} />
+          ))}
       </ul>
       <Pagination
         className="anime-list-pagination"

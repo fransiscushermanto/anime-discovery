@@ -1,6 +1,7 @@
+import { setMobileCSSHeightProperty } from "@common/helpers/functions";
 import { css, cx } from "@emotion/css";
 import { useMediaQuery } from "@hooks";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import BottomToolbar from "./BottomToolbar";
 import MobileHeader from "./MobileHeader";
 
@@ -16,25 +17,46 @@ const styled = {
     flex-direction: column;
     align-items: center;
     > .wrapper {
+      --mobile-max-height: calc(var(--vh, 1vh) * 100);
+
       position: relative;
       background-color: var(--primary-color);
       width: 100%;
-      height: 100vh;
-      max-height: 100vh;
-      overflow: hidden;
+      height: auto;
       display: flex;
       flex-direction: column;
-      > *:not(.bottom-toolbar) {
-        overflow-y: auto;
+      @media (max-width: 768px) {
+        min-height: calc(var(--mobile-max-height) - var(--mobile-nav-height));
+      }
+      > *:not(.bottom-toolbar):not(.header) {
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        > * {
+          min-height: 100vh;
+        }
+        @media (max-width: 768px) {
+          min-height: calc(var(--mobile-max-height) - var(--mobile-nav-height));
+          > * {
+            min-height: calc(
+              var(--mobile-max-height) - var(--mobile-nav-height)
+            );
+          }
+        }
       }
       @media (max-width: 768px) {
-        max-width: 500px;
+        max-width: var(--mobile-width);
+        height: auto;
+        header + * {
+          margin-top: var(--mobile-nav-height);
+        }
 
         &.with-bottom-toolbar > *:not(.bottom-toolbar):not(.header) {
-          max-height: calc(
-            100vh - var(--bottom-toolbar-height) - var(--mobile-nav-height)
-          );
-          margin-top: var(--mobile-nav-height);
+          /* max-height: calc(
+            var(--mobile-max-height) - var(--bottom-toolbar-height) -
+              var(--mobile-nav-height)
+          ); */
           margin-bottom: var(--bottom-toolbar-height);
         }
       }
@@ -43,7 +65,35 @@ const styled = {
 };
 
 function Layout({ children, withBottomToolbar }: LayoutProps) {
+  const [isStickyHeader, setIsStickyHeader] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
+
+  useEffect(() => {
+    setMobileCSSHeightProperty();
+  }, []);
+
+  useEffect(() => {
+    function handleOnScroll() {
+      setIsStickyHeader(window.scrollY > 50);
+    }
+
+    window.addEventListener("resize", () => {
+      if (isMobile) {
+        setMobileCSSHeightProperty();
+      }
+    });
+
+    document.addEventListener("scroll", handleOnScroll);
+
+    return () => {
+      window.removeEventListener("resize", () => {
+        if (isMobile) {
+          setMobileCSSHeightProperty();
+        }
+      });
+      document.removeEventListener("scroll", handleOnScroll);
+    };
+  }, [isMobile]);
 
   return (
     <div className={styled.root}>
@@ -52,8 +102,10 @@ function Layout({ children, withBottomToolbar }: LayoutProps) {
           "with-bottom-toolbar": withBottomToolbar && isMobile,
         })}
       >
-        {isMobile && <MobileHeader />}
-        {children}
+        {isMobile && (
+          <MobileHeader className={cx({ sticky: isStickyHeader })} />
+        )}
+        <main id="content-wrapper">{children}</main>
         {isMobile && withBottomToolbar && <BottomToolbar />}
       </div>
     </div>

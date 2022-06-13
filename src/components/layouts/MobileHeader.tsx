@@ -1,15 +1,39 @@
 import { css, cx } from "@emotion/css";
-import Link from "next/link";
-import React from "react";
+
+import React, { memo } from "react";
+
+interface MobileHeaderProps {
+  className?: string;
+}
 
 const styled = {
   root: css`
     height: 100%;
     width: 100%;
+    max-width: var(--mobile-width);
     max-height: var(--mobile-nav-height);
-    position: absolute;
+    position: fixed;
     top: 0;
     display: flex;
+    z-index: 1;
+    background-color: var(--primary-color);
+    transition: background-color 0.2s ease-in, color 0.2s ease-in;
+
+    &.sticky {
+      &::after {
+        content: "";
+        position: absolute;
+        background-color: transparent;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+      }
+      background-color: var(--secondary-color);
+      color: var(--primary-color);
+    }
+
     nav {
       display: inline-flex;
       width: 100%;
@@ -33,25 +57,67 @@ const styled = {
           color: var(--secondary-color);
         }
       }
+
+      .avatar {
+        cursor: pointer;
+        position: relative;
+        display: flex;
+        width: 30px;
+        height: 30px;
+        margin-left: auto;
+
+        .menu-dropdown {
+          &:before {
+            width: 0;
+            height: 0;
+            content: "";
+            z-index: 2;
+            transform: scale(1);
+            border-bottom: 0.6rem solid var(--secondary-color);
+            border-left: 0.4rem solid transparent;
+            border-right: 0.4rem solid transparent;
+            bottom: 100%;
+            right: 10px;
+            position: absolute;
+          }
+          list-style: none;
+          color: var(--primary-color);
+          z-index: -1;
+          opacity: 0;
+          margin: 0;
+          padding: 10px 20px;
+          border-radius: 8px;
+          position: absolute;
+          width: 150px;
+          height: auto;
+          margin-top: 20px;
+          top: 100%;
+          right: 0%;
+          background-color: var(--secondary-color);
+          transition: all ease-in 0.2s;
+          .menu-item {
+            cursor: pointer;
+          }
+        }
+        &.menu-dropdown-open .menu-dropdown {
+          opacity: 1;
+          z-index: 1;
+        }
+      }
     }
   `,
 };
 
-const OAUTH_URL = `https://anilist.co/api/v2/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_ANILIST_CLIENT_ID}&response_type=token`;
-
-function MobileHeader() {
+function MobileHeader({ className }: MobileHeaderProps) {
   return (
-    <header className={cx(styled.root, "header mobile-header")}>
+    <header className={cx(styled.root, "header mobile-header", className)}>
       <nav>
         <div className="navbar-brand">
           <span>Anime Discovery.</span>
         </div>
-        <Link href={OAUTH_URL} passHref>
-          <button className="login-btn">Login</button>
-        </Link>
       </nav>
     </header>
   );
 }
 
-export default MobileHeader;
+export default memo(MobileHeader);

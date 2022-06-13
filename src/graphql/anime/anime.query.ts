@@ -21,11 +21,13 @@ export const ANIME_LIST_QUERY = gql`
       media(id: $id, search: $search, sort: $sort, isAdult: $isAdult) {
         id
         bannerImage
-        description
+        description(asHtml: false)
         status
         chapters
         seasonYear
         popularity
+        episodes
+        hashtag
         coverImage {
           extraLarge
           large
@@ -50,11 +52,14 @@ export const ANIME_QUERY = gql`
     Media(id: $id) {
       id
       bannerImage
-      description
+      description(asHtml: false)
       status
       chapters
       seasonYear
       popularity
+      episodes
+      hashtag
+      genres
       coverImage {
         extraLarge
         large

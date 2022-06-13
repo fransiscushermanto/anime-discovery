@@ -6,15 +6,10 @@ import {
   NormalizedCacheObject,
 } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
+import { setContext } from "@apollo/client/link/context";
 import merge from "deepmerge";
 import Cookie from "js-cookie";
 import isEqual from "lodash/isEqual";
-import { QueryClient } from "react-query";
-import {
-  request as graphqlRequest,
-  RequestDocument,
-  Variables,
-} from "graphql-request";
 
 export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
 
@@ -22,11 +17,17 @@ let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
-    graphQLErrors.map(({ message, locations, path }) =>
+    graphQLErrors.map(({ message, locations, extensions, ...res }: any) => {
+      if (res.status === 401 && !!Cookie.get("authorization")) {
+        Cookie.remove("authorization");
+      }
+
       console.log(
-        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
-      ),
-    );
+        `[GraphQL error]: Message: ${message}, Location: ${locations}, Status Code: ${res.status}`,
+      );
+
+      return { message, locations, ...res };
+    });
   }
   if (networkError) {
     console.log(`[Network error]: ${networkError}`);
@@ -35,16 +36,34 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 
 const httpLink = new HttpLink({
   uri: process.env.NEXT_PUBLIC_ANILIST_API_URL,
-  credentials: "include",
-  headers: {
-    Authorization: `Bearer ${Cookie.get("authorization")}`,
-  },
+});
+
+const authLink = setContext((_, { headers }) => {
+  try {
+    const token = Cookie.get("authorization");
+    return {
+      headers: {
+        ...headers,
+        ...(token && { authorization: `Bearer ${token}` }),
+      },
+    };
+  } catch (error) {
+    console.log("error", error);
+  }
 });
 
 function createApolloClient() {
   return new ApolloClient({
+    defaultOptions: {
+      query: {
+        errorPolicy: "all",
+      },
+      mutate: {
+        errorPolicy: "all",
+      },
+    },
     ssrMode: typeof window === "undefined",
-    link: from([errorLink, httpLink]),
+    link: from([errorLink, authLink.concat(httpLink)]),
     cache: new InMemoryCache({
       typePolicies: {
         Query: {
@@ -56,6 +75,12 @@ function createApolloClient() {
               },
             },
             Media: {
+              keyArgs: false,
+              merge(_, incoming) {
+                return incoming;
+              },
+            },
+            AniChartUser: {
               keyArgs: false,
               merge(_, incoming) {
                 return incoming;
@@ -108,25 +133,3 @@ export function addApolloState(client: ApolloClient<any>, pageProps: any) {
   }
   return pageProps;
 }
-
-export function request(
-  request: RequestDocument,
-  variables?: Variables,
-  requestHeaders?: HeadersInit,
-) {
-  return graphqlRequest(
-    process.env.NEXT_PUBLIC_ANILIST_API_URL,
-    request,
-    variables,
-    requestHeaders,
-  );
-}
-
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      enabled: false,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
