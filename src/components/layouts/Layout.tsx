@@ -3,6 +3,7 @@ import { css, cx } from "@emotion/css";
 import { useMediaQuery } from "@hooks";
 import React, { useEffect, useState } from "react";
 import BottomToolbar from "./BottomToolbar";
+import DesktopHeader from "./DesktopHeader";
 import MobileHeader from "./MobileHeader";
 
 interface LayoutProps extends Record<string, any> {
@@ -33,6 +34,7 @@ const styled = {
         display: flex;
         flex-direction: column;
         min-height: 100vh;
+        margin-top: var(--nav-height);
         > * {
           min-height: 100vh;
         }
@@ -102,8 +104,10 @@ function Layout({ children, withBottomToolbar }: LayoutProps) {
           "with-bottom-toolbar": withBottomToolbar && isMobile,
         })}
       >
-        {isMobile && (
+        {isMobile ? (
           <MobileHeader className={cx({ sticky: isStickyHeader })} />
+        ) : (
+          <DesktopHeader className={cx({ sticky: isStickyHeader })} />
         )}
         <main id="content-wrapper">{children}</main>
         {isMobile && withBottomToolbar && <BottomToolbar />}

@@ -68,6 +68,9 @@ export const ANIME_QUERY = gql`
       }
       title {
         userPreferred
+        romaji
+        native
+        english
       }
       trailer {
         id

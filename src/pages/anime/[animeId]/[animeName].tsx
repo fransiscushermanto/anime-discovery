@@ -13,11 +13,38 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     variables: { id: context.query.animeId },
   });
 
+  const userPrefferedTitle = (res.data.Media.title.userPreferred ?? "")
+    .replace(/[ :]/g, "-")
+    .replace(/--/g, "-")
+    .replace(/\//g, "");
+  const englishTitle = (res.data.Media.title.english ?? "")
+    .replace(/[ :]/g, "-")
+    .replace(/--/g, "-")
+    .replace(/\//g, "");
+
+  const nativeTitle = (res.data.Media.title.native ?? "")
+    .replace(/[ :]/g, "-")
+    .replace(/--/g, "-")
+    .replace(/\//g, "");
+
+  const romajiTitle = (res.data.Media.title.romaji ?? "")
+    .replace(/[ :]/g, "-")
+    .replace(/--/g, "-")
+    .replace(/\//g, "");
+
+  console.log(
+    romajiTitle,
+    englishTitle,
+    nativeTitle,
+    userPrefferedTitle,
+    context.query.animeName,
+  );
+
   const notFound =
-    res.data.Media.title.userPreferred
-      .replace(/[ :]/g, "-")
-      .replace(/--/g, "-")
-      .replace(/\//g, "") !== context.query.animeName;
+    userPrefferedTitle !== context.query.animeName &&
+    englishTitle !== context.query.animeName &&
+    nativeTitle !== context.query.animeName &&
+    romajiTitle !== context.query.animeName;
 
   return addApolloState(apolloClient, { props: { notFound } });
 }

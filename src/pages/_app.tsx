@@ -35,6 +35,7 @@ function MyApp({ Component, pageProps }: AppProps) {
               background-image, background-position;
             --bottom-toolbar-height: 50px;
             --mobile-nav-height: 50px;
+            --nav-height: 70px;
             --mobile-width: 500px;
           }
 

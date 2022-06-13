@@ -19,6 +19,7 @@ const styled = {
       display: flex;
       align-items: center;
       .back-btn {
+        cursor: pointer;
         margin-right: 20px;
         border: none;
         background-color: transparent;
@@ -48,6 +49,8 @@ const styled = {
         }
 
         .remove-btn {
+          margin-top: auto;
+          cursor: pointer;
           margin-top: 10px;
           border: none;
           background-color: red;
