@@ -5,6 +5,7 @@ import {
   InMemoryCache,
   NormalizedCacheObject,
 } from "@apollo/client";
+import fetch from "cross-fetch";
 import { onError } from "@apollo/client/link/error";
 import { setContext } from "@apollo/client/link/context";
 import merge from "deepmerge";
@@ -36,6 +37,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 
 const httpLink = new HttpLink({
   uri: process.env.NEXT_PUBLIC_ANILIST_API_URL,
+  fetch,
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -101,7 +103,6 @@ export function initializeApollo(initialState?: any) {
   if (initialState) {
     // Get existing cache, loaded during client side data fetching
     const existingCache = _apolloClient.extract();
-
     // Merge the initialState from getStaticProps/getServerSideProps in the existing cache
     const data = merge(existingCache, initialState, {
       // combine arrays using object equality (like in sets)

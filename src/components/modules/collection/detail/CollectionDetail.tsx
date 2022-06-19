@@ -92,7 +92,7 @@ function CollectionDetail() {
         <button onClick={() => router.back()} className="back-btn">
           <Angle />
         </button>
-        <h1>{collectionName}</h1>
+        <h1 data-testid="title">{collectionName}</h1>
       </header>
       <ul className="anime-list">
         {currentCollection.animes.map((anime) => (
@@ -100,6 +100,7 @@ function CollectionDetail() {
             <AnimeCard anime={anime} />
             <button
               className="remove-btn"
+              data-testid={`remove-btn-${anime.id}`}
               onClick={() => removeAnimeFromCollection(anime)}
             >
               Remove

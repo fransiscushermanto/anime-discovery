@@ -1,5 +1,5 @@
 import { css, cx } from "@emotion/css";
-import { AnimeMediaModel } from "api-hooks/anime";
+import { AnimeMediaModel } from "@api-hooks/anime";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -64,21 +64,29 @@ function AnimeCard({ anime }: AnimeCardProps) {
         .replace(/\//g, "")}`}
       passHref
     >
-      <li className={cx(styled.root, "anime-list-item")}>
+      <li
+        className={cx(styled.root, "anime-list-item")}
+        role="anime-list-item"
+        data-testid={`anime-list-item-${anime.id}`}
+      >
         <div className="banner-image">
           {anime.coverImage ? (
             <Image
+              data-testid={`anime-banner-image-${anime.id}`}
               src={anime.coverImage.large}
               width={154}
               height={184}
               alt={anime.title.userPreferred}
             />
           ) : (
-            <div className="placeholder-banner-image"></div>
+            <div
+              className="placeholder-banner-image"
+              data-testid={`placeholder-banner-image-${anime.id}`}
+            ></div>
           )}
         </div>
         <div className="anime-infos">
-          <div className="title">
+          <div className="title" data-testid={`anime-title-${anime.id}`}>
             <span>{anime.title.userPreferred}</span>
           </div>
         </div>
