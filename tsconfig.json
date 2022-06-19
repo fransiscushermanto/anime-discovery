@@ -17,14 +17,17 @@
     "incremental": true,
     "baseUrl": "./src",
     "paths": {
+      "@api-hooks/*": ["api-hooks/*"],
       "@common/*": ["common/*"],
       "@modules": ["components/modules/index.ts"],
       "@hooks": ["hooks/index.ts"],
       "@layouts": ["components/layouts/index.ts"],
       "@graphql/*": ["graphql/*"],
-      "@shapes": ["components/shapes/index.ts"]
+      "@shapes": ["components/shapes/index.ts"],
+      "@test-utils": ["test/test-utils.tsx"],
+      "@elements": ["components/elements/index.ts"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "jest.config.js"],
   "exclude": ["node_modules"]
 }

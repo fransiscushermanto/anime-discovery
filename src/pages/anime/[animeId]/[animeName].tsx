@@ -32,14 +32,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     .replace(/--/g, "-")
     .replace(/\//g, "");
 
-  console.log(
-    romajiTitle,
-    englishTitle,
-    nativeTitle,
-    userPrefferedTitle,
-    context.query.animeName,
-  );
-
   const notFound =
     userPrefferedTitle !== context.query.animeName &&
     englishTitle !== context.query.animeName &&

@@ -1,6 +1,6 @@
 import { addApolloState, initializeApollo } from "@common/client";
 import { ANIME_LIST_QUERY } from "@graphql/anime";
-import { allAnimeListVariables, Landing } from "@modules";
+import { allAnimeListVariables, AnimeList } from "@modules";
 import type { GetServerSidePropsContext } from "next";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -14,11 +14,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     variables: { ...allAnimeListVariables, page: currentPage },
   });
 
-  return addApolloState(apolloClient, { props: {} });
+  const pageProps = addApolloState(apolloClient, { props: {} });
+
+  return pageProps;
 }
 
 export default function HomePage() {
-  return <Landing />;
+  return <AnimeList />;
 }
 
 HomePage.withBottomToolbar = true;

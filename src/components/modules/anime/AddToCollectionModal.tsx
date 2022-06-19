@@ -2,7 +2,7 @@ import { css, cx } from "@emotion/css";
 import { useAnimeCollections } from "@hooks";
 import { Cross } from "@shapes";
 import { AnimeMediaModel } from "api-hooks/anime";
-import { ModalProps } from "components/elements";
+import { ModalProps } from "@elements";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 interface AddToCollectionModalProps extends ModalProps {
@@ -162,7 +162,6 @@ function AddToCollectionModal({
       }
 
       if (error?.invalid) return;
-
       addCollection({ name, animes: [currentAnime] });
       onClose();
     },
@@ -187,17 +186,22 @@ function AddToCollectionModal({
   }, [isOpenAddNewCollectionForm]);
 
   return (
-    <div className={cx("modal", styled.root)}>
+    <div
+      data-testid="add-to-collection-modal"
+      className={cx("modal", styled.root)}
+    >
       <div className="modal-overlay" />
       <div className="modal-body">
         <div onClick={onClose} className="close">
           <Cross />
         </div>
         {isOpenAddNewCollectionForm ? (
-          <form onSubmit={handleSave}>
+          <form data-testid="new-collection-form" onSubmit={handleSave}>
             <div className="form-group">
               <label>Collection Name</label>
               <input
+                name="collection"
+                role="textbox"
                 type="text"
                 value={name}
                 className={cx({ invalid: error?.invalid })}
@@ -213,7 +217,7 @@ function AddToCollectionModal({
             </button>
           </form>
         ) : (
-          <ul className="collection-list">
+          <ul data-testid="collection-list" className="collection-list">
             {collections.map((collection) => {
               const selected = animeCollections.some(
                 (animeCollection) => animeCollection.name === collection.name,

@@ -1,9 +1,8 @@
 import { css } from "@emotion/css";
 import { useGetAnimeList } from "api-hooks/anime";
-import Pagination from "components/elements/Pagination";
+import { Pagination } from "@elements";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
-import { useRef } from "react";
 import AnimeCard from "./AnimeCard";
 import { allAnimeListVariables } from "./constants";
 
@@ -46,6 +45,8 @@ function AnimeList() {
   const currentPage = router.query.page
     ? parseInt(router.query.page as string)
     : allAnimeListVariables.page;
+
+  console.log("curentPage", currentPage, "anime list", data);
 
   function onPageChange(page: number) {
     window.scrollTo({ top: 0, behavior: "smooth" });

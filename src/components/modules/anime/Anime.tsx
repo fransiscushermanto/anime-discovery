@@ -170,12 +170,14 @@ function Anime() {
       <div className="top-wrapper">
         <div className="banner-image">
           <Image
+            data-testid="banner-image"
             width={400}
             height={600}
             src={data.Media.coverImage.extraLarge}
             alt={data.Media.title.userPreferred}
           />
           <button
+            data-testid="add-to-collection-btn"
             onClick={() => openModal("add")}
             className="add-to-collection-btn"
           >
@@ -217,8 +219,14 @@ function Anime() {
               <Link
                 href={`/collections/${collection.name}`}
                 key={collection.name}
+                passHref
               >
-                <li className="collection-list-item">{collection.name}</li>
+                <li
+                  data-testid="collection-list-item"
+                  className="collection-list-item"
+                >
+                  {collection.name}
+                </li>
               </Link>
             ))}
           </ul>
@@ -230,27 +238,39 @@ function Anime() {
         <div className="infos">
           <div className="info seasonYear">
             <span className="title">Season Year</span>
-            <span className="value">{data.Media.seasonYear ?? "-"}</span>
+            <span data-testid="seasonYear" className="value">
+              {data.Media.seasonYear ?? "-"}
+            </span>
           </div>
           <div className="info popularity">
             <span className="title">Popularity</span>
-            <span className="value">{data.Media.popularity ?? "-"}</span>
+            <span data-testid="popularity" className="value">
+              {data.Media.popularity ?? "-"}
+            </span>
           </div>
           <div className="info chapters">
             <span className="title">Chapters</span>
-            <span className="value">{data.Media.chapters ?? "-"}</span>
+            <span data-testid="chapters" className="value">
+              {data.Media.chapters ?? "-"}
+            </span>
           </div>
           <div className="info episodes">
             <span className="title">Episodes</span>
-            <span className="value">{data.Media.episodes ?? "-"}</span>
+            <span data-testid="episodes" className="value">
+              {data.Media.episodes ?? "-"}
+            </span>
           </div>
           <div className="info hastag">
             <span className="title">Hastag</span>
-            <span className="value">{data.Media.hashtag ?? "-"}</span>
+            <span data-testid="hashtag" className="hastag">
+              {data.Media.hashtag ?? "-"}
+            </span>
           </div>
           <div className="info genres">
             <span className="title">Genres</span>
-            <span className="value">{data.Media.genres.join(", ") ?? "-"}</span>
+            <span data-testid="genres" className="genres">
+              {data.Media.genres.join(", ") ?? "-"}
+            </span>
           </div>
         </div>
       </div>

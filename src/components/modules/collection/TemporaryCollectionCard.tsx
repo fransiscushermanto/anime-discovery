@@ -108,9 +108,14 @@ function TemporaryCollectionCard({
   }
 
   return (
-    <li className={cx("collection-list-item temporary", styled.root)}>
+    <li
+      data-testid="temporary-collection-list-item"
+      className={cx("collection-list-item temporary", styled.root)}
+    >
       <div className="form-group">
         <input
+          role="textbox"
+          name="collection"
           value={name}
           onChange={(e) => {
             setName(e.target.value);
@@ -123,10 +128,10 @@ function TemporaryCollectionCard({
         {error?.message && <span className="message">{error.message}</span>}
       </div>
       <div className="action-wrapper">
-        <button onClick={onCancel} className="cancel action-btn">
+        <button role="cancel-btn" onClick={onCancel} className="cancel action-btn">
           <Cross fill="red" />
         </button>
-        <button onClick={handleSave} className="save action-btn">
+        <button role="submit-btn" onClick={handleSave} className="save action-btn">
           <Check fill="green" />
         </button>
       </div>

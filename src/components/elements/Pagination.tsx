@@ -6,7 +6,7 @@ interface PaginationProps {
   shownPages: number;
   currentPage: number;
   onPageChange: (page: number) => void;
-  minPageIndex: number;
+  minPageIndex?: number;
   className?: string;
 }
 
@@ -51,7 +51,7 @@ function Pagination({
 }: PaginationProps) {
   const renderPageNumbers = React.useCallback(() => {
     if (shownPages < 3) {
-      throw new Error("shownPages must be greater than 5");
+      throw new Error("shownPages must be greater than 3");
     }
 
     const minimumShownablePageLength = shownPages > 5 ? 11 : shownPages * 2 - 1;
@@ -104,6 +104,7 @@ function Pagination({
             active: currentPage === index + 1,
           })}
           onClick={() => onPageChange(index + 1)}
+          data-testid={`page-${index + 1}`}
         >
           {index + 1}
         </button>,
@@ -131,9 +132,10 @@ function Pagination({
     <div className={cx("pagination", styled.pagination, className)}>
       <button
         className={cx("page", styled.button, {
-          active: currentPage === 1,
+          active: currentPage === minPageIndex,
         })}
-        onClick={() => onPageChange(1)}
+        onClick={() => onPageChange(minPageIndex)}
+        data-testid={`page-${minPageIndex}`}
       >
         {minPageIndex}
       </button>
@@ -144,6 +146,7 @@ function Pagination({
             active: currentPage === totalPages,
           })}
           onClick={() => onPageChange(totalPages)}
+          data-testid={`page-${totalPages}`}
         >
           {totalPages}
         </button>

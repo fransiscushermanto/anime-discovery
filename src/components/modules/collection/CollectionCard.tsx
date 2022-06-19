@@ -75,13 +75,16 @@ const styled = {
 
 function CollectionCard({ collection, onDelete }: CollectionCardProps) {
   return (
-    <Link href={`/collections/${collection.name}`}>
+    <Link href={`/collections/${collection.name}`} passHref>
       <li
+        data-testid="collection-list-item"
         className={cx("collection-list-item", styled.root, {
           empty: collection.animes.length < 1,
         })}
       >
         <button
+          role="delete-btn"
+          data-collection-name={collection.name}
           onClick={(e) => {
             e.stopPropagation();
             onDelete(collection);
@@ -91,9 +94,14 @@ function CollectionCard({ collection, onDelete }: CollectionCardProps) {
           <Trash />
         </button>
         {collection.animes.length < 1 ? (
-          <span>No Anime</span>
+          <span data-testid={`placeholder-collection-cover-${collection.name}`}>
+            No Anime
+          </span>
         ) : (
-          <div className="collection-cover">
+          <div
+            data-testid={`collection-cover-${collection.name}`}
+            className="collection-cover"
+          >
             <Image
               src={collection.animes[0].coverImage.large}
               width={135}

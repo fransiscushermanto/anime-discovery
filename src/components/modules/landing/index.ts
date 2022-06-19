@@ -1,2 +1,2 @@
-export { default as Landing } from "./Landing";
+export { default as AnimeList } from "./AnimeList";
 export * from "./constants";

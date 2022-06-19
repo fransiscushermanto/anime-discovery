@@ -126,6 +126,7 @@ function CollectionList() {
           ),
         )}
         <li
+          role="add-collection"
           className="collection-list-item placeholder"
           onClick={addTemporaryCollection}
         >
