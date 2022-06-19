@@ -46,8 +46,6 @@ function AnimeList() {
     ? parseInt(router.query.page as string)
     : allAnimeListVariables.page;
 
-  console.log("curentPage", currentPage, "anime list", data);
-
   function onPageChange(page: number) {
     window.scrollTo({ top: 0, behavior: "smooth" });
     router.push(
